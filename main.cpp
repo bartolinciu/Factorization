@@ -54,13 +54,14 @@ class list{
 	list_element *_start, *_end;
 	
 	size_t _size;
-	
+	bool _changed;
 	public:
 	
 	list(){
 		this->_start = NULL;
 		this->_end  = NULL;
 		this->_size  = 0;
+		this->_changed = false;
 	}
 	
 	size_t size(){
@@ -69,7 +70,6 @@ class list{
 	
 	void push( int value ){
 		list_element *new_element = new list_element{ this->_start, this->_end, value };
-		
 		if( this->_size ){
 			this->_start->prev = new_element;
 			this->_end->next  = new_element;
@@ -83,7 +83,7 @@ class list{
 		}
 		
 		this->_size++;
-		
+		this->_changed = true;
 	}
 	
 	void remove( list_element *to_delete ){
@@ -91,6 +91,7 @@ class list{
 		to_delete->next->prev = to_delete->prev;
 		delete to_delete;
 		this->_size--;
+		this->_changed = true;
 	}
 	
 	list_element* begin(){
@@ -99,6 +100,14 @@ class list{
 	
 	list_element* end(){
 		return this->_end;
+	}
+	
+	bool has_changed(){
+		return this->_changed;
+	}
+	
+	void set_unchanged(){
+		this->_changed=false;
 	}
 	
 } primals;
@@ -249,6 +258,7 @@ void LoadPrimals(){
 	}
 	else if( primals.size() == 1 )
 		primals.push( 3 );
+	primals.set_unchanged();
 }
 
 void StorePrimals(){
@@ -327,5 +337,6 @@ void factorize( int number ){
 			primal = primal->next;
 	}
 	PrintL( 1 );
-	StorePrimals();
+	if( primals.has_changed())
+		StorePrimals();
 }
