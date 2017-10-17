@@ -294,6 +294,29 @@ void factorize( int number ){
 	ClearL();
 	ClearR();
 	
+	bool exited_clearly = true;
+	
+	//main factorization loop
+	auto primal = primals.begin();
+	for( size_t i = 0; i < primals.size(); i++ ){
+		if( number == 1 ){
+			exited_clearly = false;
+			break;
+		}
+		if( number % primal->value == 0 ){
+			PrintL( number );
+			PrintR( primal->value );
+			number /= primal->value;
+		}
+		else
+			primal = primal->next;
+	}
+	
+	if(!exited_clearly){
+		PrintL( 1 );
+		return;
+	}
+	
 	//generating list of primal numbers using sieve of Eratosthenes
 	auto end = primals.end();
 	size_t size  = primals.size();
@@ -323,8 +346,6 @@ void factorize( int number ){
 		}
 	}
 	
-	//main factorization loop
-	auto primal = primals.begin();
 	for( size_t i = 0; i < primals.size(); i++ ){
 		if( number == 1 )
 			break;
@@ -336,7 +357,8 @@ void factorize( int number ){
 		else
 			primal = primal->next;
 	}
-	PrintL( 1 );
+	PrintL(1);
+	
 	if( primals.has_changed())
 		StorePrimals();
 }
